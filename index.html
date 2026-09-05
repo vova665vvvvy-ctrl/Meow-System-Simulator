@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebOS Ultimate Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="audio-container"></div>
+
+    <!-- 1. ЭКРАН ЗАГРУЗКИ -->
+    <div id="boot-screen" class="boot-screen">
+        <div class="logo">💻 WebOS Pro</div>
+        <div class="spinner"></div>
+        <div class="boot-text">Загрузка компонентов системы...</div>
+    </div>
+
+    <!-- 2. ЭКРАН ВЫБОРА ПОЛЬЗОВАТЕЛЯ -->
+    <div id="user-screen" class="user-screen">
+        <div class="user-window">
+            <h2>Добро пожаловать</h2>
+            <p>Выберите учетную запись:</p>
+            <div class="user-options">
+                <div class="user-card" onclick="loginUser('Администратор', 'blue')">
+                    <div class="user-avatar">👨‍💻</div>
+                    <div class="user-name">Администратор</div>
+                </div>
+                <div class="user-card" onclick="loginUser('Гость', 'sunset')">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-name">Гость</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. СИНИЙ ЭКРАН СМЕРТИ (BSOD) -->
+    <div id="bsod-screen" class="bsod">
+        <h1>:(</h1>
+        <h2>На вашем устройстве возникла проблема, и его необходимо перезагрузить.</h2>
+        <p>Мы лишь собираем некоторую информацию об ошибке, а затем будет автоматически выполнена перезагрузка.</p>
+        <p class="error-code">Код остановки: <span id="bsod-code">CRITICAL_PROCESS_DIED</span></p>
+        <button onclick="location.reload()" class="reboot-btn">Перезагрузить сейчас</button>
+    </div>
+
+    <!-- 4. ОКНО ОШИБКИ -->
+    <div id="error-dialog" class="window error-dialog">
+        <div class="window-header">
+            <span>⚠️ Системная ошибка</span>
+            <button class="close-btn" onclick="closeWindow('error-dialog')">×</button>
+        </div>
+        <div class="window-content error-dialog-content">
+            <span class="error-icon">❌</span>
+            <div>
+                <p><strong>Ошибка сохранения!</strong></p>
+                <p>Невозможно создать пустой файл. Введите текст в Блокнот перед сохранением.</p>
+            </div>
+        </div>
+        <div class="error-footer">
+            <button onclick="closeWindow('error-dialog')">OK</button>
+        </div>
+    </div>
+
+    <!-- 5. ОСНОВНОЙ РАБОЧИЙ СТОЛ -->
+    <div class="desktop" id="desktop" oncontextmenu="showContextMenu(event)">
+        
+        <div id="shortcuts-container" class="shortcuts-grid">
+            <div class="shortcut" onclick="openWindow('notepad')">
+                <div class="icon">📝</div>
+                <div class="icon-text">Блокнот</div>
+            </div>
+            <div class="shortcut" onclick="openWindow('calc')">
+                <div class="icon">🔢</div>
+                <div class="icon-text">Калькулятор</div>
+            </div>
+            <div class="shortcut" onclick="openWindow('browser')">
+                <div class="icon">🌐</div>
+                <div class="icon-text">Браузер</div>
+            </div>
+            <div class="shortcut" onclick="openWindow('terminal')">
+                <div class="icon">💻</div>
+                <div class="icon-text">Терминал</div>
+            </div>
+            <div class="shortcut" onclick="openWindow('wallpaper-win')">
+                <div class="icon">🖼️</div>
+                <div class="icon-text">Обои</div>
+            </div>
+        </div>
+
+        <!-- Окно Блокнота -->
+        <div id="notepad" class="window">
+            <div class="window-header" onmousedown="dragStart(event, 'notepad')">
+                <span>📝 Блокнот</span>
+                <button class="close-btn" onclick="closeWindow('notepad')">×</button>
+            </div>
+            <div class="window-content notepad-content">
+                <textarea id="notepad-text" placeholder="Введите текст здесь..."></textarea>
+                <button class="save-file-btn" onclick="saveNotepadFile()">💾 Создать файл на столе</button>
+            </div>
+        </div>
+
+        <!-- Окно Калькулятора -->
+        <div id="calc" class="window calc-window">
+            <div class="window-header" onmousedown="dragStart(event, 'calc')">
+                <span>🔢 Калькулятор</span>
+                <button class="close-btn" onclick="closeWindow('calc')">×</button>
+            </div>
+            <div class="window-content">
+                <input type="text" id="calc-screen" readonly value="0">
+                <div class="calc-buttons">
+                    <button onclick="clearCalc()" class="btn-clear">C</button>
+                    <button onclick="pressCalc('/')">/</button>
+                    <button onclick="pressCalc('*')">*</button>
+                    <button onclick="pressCalc('-')">-</button>
+                    <button onclick="pressCalc('7')">7</button>
+                    <button onclick="pressCalc('8')">8</button>
+                    <button onclick="pressCalc('9')">9</button>
+                    <button onclick="pressCalc('+')">+</button>
+                    <button onclick="pressCalc('4')">4</button>
+                    <button onclick="pressCalc('5')">5</button>
+                    <button onclick="pressCalc('6')">6</button>
+                    <button onclick="calculate()" class="btn-equal">=</button>
+                    <button onclick="pressCalc('1')">1</button>
+                    <button onclick="pressCalc('2')">2</button>
+                    <button onclick="pressCalc('3')">3</button>
+                    <button onclick="pressCalc('0')">0</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Мини-Браузер -->
+        <div id="browser" class="window browser-window">
+            <div class="window-header" onmousedown="dragStart(event, 'browser')">
+                <span>🌐 Web Browser</span>
+                <button class="close-btn" onclick="closeWindow('browser')">×</button>
+            </div>
+            <div class="browser-bar">
+                <input type="text" id="browser-url" value="https://wikipedia.org" placeholder="Введите URL-адрес...">
+                <button onclick="navigateBrowser()">Перейти</button>
+            </div>
+            <div class="browser-bookmarks">
+                <span>Закладки:</span>
+                <button onclick="quickNav('https://wikipedia.org')">Wikipedia</button>
+                <button onclick="quickNav('https://archive.org')">Archive.org</button>
+            </div>
+            <div class="window-content browser-content">
+                <iframe id="browser-frame" src="https://wikipedia.org"></iframe>
+            </div>
+        </div>
+
+        <!-- Окно Терминала -->
+        <div id="terminal" class="window terminal-window">
+            <div class="window-header" onmousedown="dragStart(event, 'terminal')">
+                <span>💻 Terminal.exe</span>
+                <button class="close-btn" onclick="closeWindow('terminal')">×</button>
+            </div>
+            <div class="window-content terminal-content">
+                <div id="terminal-output">WebOS Pro [Version 2026]<br>Введите 'help' для списка команд.<br><br></div>
+                <div class="terminal-input-line">
+                    <span>C:\></span><input type="text" id="terminal-input" autofocus>
+                </div>
+            </div>
+        </div>
+
+        <!-- Окно Смены Обоей -->
+        <div id="wallpaper-win" class="window">
+            <div class="window-header" onmousedown="dragStart(event, 'wallpaper-win')">
+                <span>🖼️ Смена Обоев</span>
+                <button class="close-btn" onclick="closeWindow('wallpaper-win')">×</button>
+            </div>
+            <div class="window-content wallpaper-content">
+                <div class="wp-option bg-blue" onclick="changeWallpaper('blue')">Синий градиент</div>
+                <div class="wp-option bg-dark" onclick="changeWallpaper('dark')">Тёмный космос</div>
+                <div class="wp-option bg-sunset" onclick="changeWallpaper('sunset')">Закат</div>
+            </div>
+        </div>
+
+        <!-- Контекстное меню -->
+        <div id="context-menu" class="context-menu">
+            <div onclick="createNewFolder()">📁 Создать папку</div>
+            <div onclick="location.reload()">🔄 Перезагрузить ОС</div>
+        </div>
+
+        <!-- ЗОНА СИСТЕМНЫХ УВЕДОМЛЕНИЙ -->
+        <div id="notification-area" class="notification-area"></div>
+    </div>
+
+    <!-- 6. ПАНЕЛЬ ЗАДАЧ И МЕНЮ ПУСК -->
+    <div id="start-menu" class="start-menu">
+        <div class="start-header"><span id="current-user-label">👤 Пользователь</span></div>
+        <div class="start-apps">
+            <div onclick="openFromStart('notepad')">📝 Блокнот</div>
+            <div onclick="openFromStart('calc')">🔢 Калькулятор</div>
+            <div onclick="openFromStart('browser')">🌐 Браузер</div>
+            <div onclick="openFromStart('terminal')">💻 Терминал</div>
+            <div onclick="openFromStart('wallpaper-win')">🖼️ Смена обоев</div>
+            <hr>
+            <div onclick="logoutSystem()" style="color: #ffa500; font-weight: bold;">🚪 Сменить пользователя</div>
+            <div onclick="triggerBsod('CRITICAL_PROCESS_DIED')" style="color: #ff5f56; font-weight: bold;">⚠️ Краш системы (BSOD 1)</div>
+            <div onclick="triggerBsod('KERNEL_SECURITY_CHECK_FAILURE')" style="color: #ff5f56; font-weight: bold;">⚠️ Краш безопасности (BSOD 2)</div>
+        </div>
+    </div>
+
+    <div class="taskbar">
+        <button class="start-btn" onclick="toggleStartMenu(event)">⚡ Пуск</button>
+        <div class="time" id="clock">00:00</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

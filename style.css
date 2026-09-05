@@ -1,0 +1,141 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+}
+
+/* ЭКРАН ЗАГРУЗКИ */
+.boot-screen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #111; color: white; z-index: 9999;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    transition: opacity 0.5s ease;
+}
+.boot-screen .logo { font-size: 36px; font-weight: bold; margin-bottom: 20px; }
+.spinner {
+    width: 50px; height: 50px; border: 5px solid #333;
+    border-top: 5px solid #0078d7; border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.boot-text { margin-top: 15px; color: #aaa; font-size: 14px; }
+
+/* ЭКРАН ВЫБОРА ПОЛЬЗОВАТЕЛЯ */
+.user-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle, #2c3e50, #000);
+    z-index: 9990; display: none; justify-content: center; align-items: center;
+    color: white; text-align: center;
+}
+.user-window { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 40px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); }
+.user-window h2 { font-size: 28px; margin-bottom: 10px; }
+.user-window p { color: #ccc; margin-bottom: 30px; }
+.user-options { display: flex; gap: 30px; justify-content: center; }
+.user-card {
+    background: rgba(255,255,255,0.05); border: 1px solid transparent;
+    padding: 20px; border-radius: 8px; width: 140px; cursor: pointer; transition: all 0.2s ease;
+}
+.user-card:hover { background: rgba(255,255,255,0.15); border-color: #0078d7; transform: translateY(-5px); }
+.user-avatar { font-size: 50px; margin-bottom: 10px; }
+.user-name { font-weight: bold; font-size: 14px; }
+
+/* ВСПЛЫВАЮЩИЕ УВЕДОМЛЕНИЯ */
+.notification-area {
+    position: absolute; bottom: 20px; right: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    z-index: 9995; pointer-events: none;
+}
+.toast {
+    width: 280px; background: rgba(255, 255, 255, 0.95);
+    border-left: 4px solid #0078d7; border-radius: 4px;
+    padding: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    color: #333; pointer-events: auto;
+    animation: slideIn 0.3s ease forwards;
+}
+.toast-header { font-weight: bold; font-size: 13px; margin-bottom: 4px; display: flex; justify-content: space-between; }
+.toast-body { font-size: 12px; color: #555; }
+@keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes fadeOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+
+/* СИНИЙ ЭКРАН СМЕРТИ (BSOD) */
+.bsod { position: fixed; top:0; left:0; width:100%; height:100%; background: #0046a6; color: white; padding: 10% 15%; z-index: 9998; display: none; flex-direction: column; gap: 20px; }
+.bsod h1 { font-size: 100px; }
+.error-code { background: rgba(0,0,0,0.2); padding: 10px; border-left: 5px solid #ff5f56; font-family: monospace; font-size: 16px; }
+.reboot-btn { width: 200px; padding: 10px; background: white; border: none; cursor: pointer; font-weight: bold; color: #0046a6; border-radius: 4px; }
+
+/* ОКНО ОШИБКИ */
+.error-dialog { width: 350px !important; height: 160px !important; left: 40% !important; top: 35% !important; border: 2px solid #cc0000 !important; }
+.error-dialog-content { display: flex; gap: 15px; align-items: center; background: #fff;}
+.error-icon { font-size: 32px; }
+.error-footer { background: #f0f0f0; padding: 8px; text-align: right; border-top: 1px solid #ddd; }
+.error-footer button { padding: 5px 25px; border: 1px solid #999; background: #fff; cursor: pointer; font-weight: bold;}
+
+/* РАБОЧИЙ СТОЛ */
+.desktop { width: 100%; height: calc(100% - 40px); position: relative; padding: 20px; transition: background 0.5s ease; }
+.shortcuts-grid { display: grid; grid-template-columns: repeat(auto-fill, 80px); grid-template-rows: repeat(auto-fill, 90px); gap: 15px; height: 100%; align-content: flex-start; }
+.shortcut { width: 80px; text-align: center; cursor: pointer; color: white; }
+.shortcut .icon { font-size: 40px; margin-bottom: 5px; }
+.shortcut .icon-text { font-size: 12px; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); word-wrap: break-word; overflow: hidden; max-height: 32px; }
+
+/* ОКНА */
+.window { position: absolute; width: 340px; height: 260px; background: #f0f0f0; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: none; flex-direction: column; overflow: hidden; z-index: 10; border: 1px solid #bbb; }
+.window-header { background: #ffffff; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; cursor: move; font-weight: bold; font-size: 13px; border-bottom: 1px solid #ddd; user-select: none; }
+.close-btn { background: #ff5f56; border: none; color: white; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 12px; }
+.window-content { flex: 1; padding: 10px; overflow: auto; }
+
+/* БЛОКНОТ */
+.notepad-content { display: flex; flex-direction: column; gap: 8px; }
+.notepad-content textarea { flex: 1; border: 1px solid #ddd; border-radius: 4px; resize: none; outline: none; padding: 8px; min-height: 120px; }
+.save-file-btn { padding: 6px; background: #0078d7; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+/* КАЛЬКУЛЯТОР */
+.calc-window { width: 260px; height: 340px; }
+#calc-screen { width: 100%; height: 50px; background: #333; color: #fff; text-align: right; padding: 10px; font-size: 24px; border: none; border-radius: 4px; margin-bottom: 10px; }
+.calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; height: calc(100% - 60px); }
+.calc-buttons button { padding: 12px; font-size: 16px; font-weight: bold; background: #fff; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; }
+.calc-buttons .btn-clear { background: #ffaa00; color: white; }
+.calc-buttons .btn-equal { background: #2a5298; color: white; grid-row: span 2; }
+
+/* МИНИ-БРАУЗЕР */
+.browser-window { width: 600px; height: 450px; }
+.browser-bar { display: flex; gap: 5px; padding: 5px 10px; background: #fff; border-bottom: 1px solid #ddd; }
+.browser-bar input { flex: 1; padding: 5px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
+.browser-bar button { padding: 5px 15px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+.browser-bookmarks { padding: 5px 10px; background: #f9f9f9; font-size: 11px; border-bottom: 1px solid #eee; display: flex; gap: 5px; align-items: center; }
+.browser-bookmarks button { padding: 2px 8px; font-size: 11px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-radius: 3px; }
+.browser-content { padding: 0 !important; display: flex; }
+#browser-frame { width: 100%; height: 100%; border: none; background: #fff; }
+
+/* ТЕРМИНАЛ */
+.terminal-window { width: 500px; height: 320px; }
+.terminal-content { background: #111; color: #00ff00; font-family: monospace; display: flex; flex-direction: column; }
+#terminal-output { flex: 1; overflow-y: auto; white-space: pre-wrap; font-size: 14px; }
+.terminal-input-line { display: flex; align-items: center; }
+#terminal-input { flex: 1; background: transparent; border: none; color: #00ff00; font-family: monospace; font-size: 14px; outline: none; }
+
+/* ОБОИ И МЕНЮ */
+.wallpaper-content { display: flex; flex-direction: column; gap: 10px; }
+.wp-option { padding: 15px; color: white; text-align: center; border-radius: 6px; cursor: pointer; font-weight: bold; text-shadow: 1px 1px 2px black; }
+.bg-blue { background: linear-gradient(135deg, #1e3c72, #2a5298); }
+.bg-dark { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); }
+.bg-sunset { background: linear-gradient(135deg, #e11d48, #f59e0b); }
+.start-menu { position: absolute; bottom: 45px; left: 5px; width: 260px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 6px; box-shadow: 0 5px 25px rgba(0,0,0,0.3); display: none; flex-direction: column; z-index: 200; border: 1px solid #ccc; overflow: hidden; }
+.start-header { background: #0078d7; color: white; padding: 15px; font-weight: bold; }
+.start-apps { padding: 10px; display: flex; flex-direction: column; gap: 5px; }
+.start-apps div { padding: 8px 12px; cursor: pointer; border-radius: 4px; font-size: 13px; }
+.start-apps div:hover { background: #eee; }
+.context-menu { position: absolute; background: white; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); border-radius: 4px; display: none; flex-direction: column; z-index: 1000; padding: 5px 0; }
+.context-menu div { padding: 8px 20px; font-size: 13px; cursor: pointer; }
+.context-menu div:hover { background: #f0f0f0; }
+.taskbar { width: 100%; height: 40px; background: rgba(30, 30, 30, 0.9); display: flex; justify-content: space-between; align-items: center; padding: 0 15px; position: absolute; bottom: 0; z-index: 100; }
+.start-btn { padding: 5px 15px; background: #0078d7; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+.time { color: white; font-size: 14px; }
